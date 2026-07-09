@@ -56,9 +56,10 @@ int main() {
                 void movimentarSaldo(Mercado& mercadoAtivo);
                 break;
             case 3:
+                void comprarMoeda(Mercado& mercadoAtivo);
                 break;
             case 4:
-                minhaCarteira.listarPosicoes();
+                void listarPosicoes();
                 break;
             case 5:
                 break;

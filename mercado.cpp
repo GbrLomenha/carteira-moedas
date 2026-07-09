@@ -38,3 +38,9 @@ Moeda Mercado::obterMoeda(string codigoPassado) {
         }
     }
 }
+
+//TROCAR DEPOIS DA API DE CONSULTAR CAMBIO
+double Mercado::consultarCambio(Moeda moedaBase, Moeda moedaCambio) {
+
+    return 2.0; 
+}

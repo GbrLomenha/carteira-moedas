@@ -17,6 +17,7 @@ class Carteira{
         
     public:
         Carteira(Moeda moeda);
+
         bool carregarDados(string nomeArquivo, Mercado& mercadoAtivo);
         void salvarDados(string nomeArquivo);
 
@@ -27,4 +28,6 @@ class Carteira{
         void consolidarCarteira();
         
         void movimentarSaldo(Mercado& mercadoAtivo);
+        
+        void comprarMoeda(Mercado& mercado);
 };

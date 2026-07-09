@@ -127,3 +127,74 @@ void Carteira:: listarPosicoes() {
         imprimirPosicaoMoedaUnica(nomeMoeda, quantidade);
     }   
 }
+
+void Carteira::comprarMoeda(Mercado& mercado) {
+    cout << "\n--- COMPRAR MOEDA ---" << endl;
+
+    //Listar moedas aqui para mostrar opções
+    
+    string codigoDestino;
+    cout << "Digite o codigo da moeda que voce deseja COMPRAR (ex: USD): ";
+    cin >> codigoDestino;
+    for (auto & c: codigoDestino) c = toupper(c);
+
+    if (!mercado.validarMoeda(codigoDestino)) {
+        cout << "Erro: A moeda '" << codigoDestino << "' nao e suportada pelo mercado." << endl;
+        return;
+    }
+
+    string codigoOrigem;
+    cout << "Digite o codigo da moeda que voce vai USAR PARA PAGAR (ex: BRL): ";
+    cin >> codigoOrigem;
+    for (auto & c: codigoOrigem) c = toupper(c);
+
+    if (moedas.find(codigoOrigem) == moedas.end() || moedas[codigoOrigem] <= 0) {
+        cout << "Erro: Voce nao possui saldo de " << codigoOrigem << " para usar." << endl;
+        return;
+    }
+
+    Moeda origem = mercado.obterMoeda(codigoOrigem);
+    Moeda destino = mercado.obterMoeda(codigoDestino);
+    double taxa = mercado.consultarCambio(origem, destino);
+
+    int opcaoTroca;
+    cout << endl << "Como voce deseja definir a conversao?" << endl;
+    cout << "1 - Quero definir o valor exato de " << codigoOrigem << " que vou GASTAR." << endl;
+    cout << "2 - Quero definir o valor exato de " << codigoDestino << " que vou OBTER." << endl;
+    cout << "Escolha a opcao: ";
+    cin >> opcaoTroca;
+
+    int quantidadePaga = 0;
+    int quantidadeRecebida = 0;
+
+    if (opcaoTroca == 1) {
+        cout << "Quanto de " << codigoOrigem << " voce quer gastar? (Saldo atual: " << moedas[codigoOrigem] << "): ";
+        cin >> quantidadePaga;
+        
+        quantidadeRecebida = quantidadePaga * taxa; 
+        
+    } else if (opcaoTroca == 2) {
+        cout << "Quanto de " << codigoDestino << " voce quer obter/comprar?: ";
+        cin >> quantidadeRecebida;
+        quantidadePaga = quantidadeRecebida / taxa;
+        
+    } else {
+        cout << "Opcao invalida. Operacao cancelada." << endl;
+        return;
+    }
+
+    if (quantidadePaga > moedas[codigoOrigem]) {
+        cout << "Erro: Saldo insuficiente. A operacao exige " << quantidadePaga << " " << codigoOrigem << ", mas voce so possui " << moedas[codigoOrigem] << "." << endl;
+        return;
+    }
+
+    if (quantidadePaga <= 0 || quantidadeRecebida <= 0) {
+        cout << "Erro: O valor resultante da conversao e zero ou invalido. Operacao cancelada." << endl;
+        return;
+    }
+
+    cout << "\nResumo: Convertendo " << quantidadePaga << " " << codigoOrigem << " para " << quantidadeRecebida << " " << codigoDestino << " (Taxa: " << taxa << ")" << endl;
+
+    this->sacar(codigoOrigem, quantidadePaga);
+    this->depositar(codigoDestino, quantidadeRecebida);
+}

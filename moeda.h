@@ -5,6 +5,6 @@ using namespace std;
 class Moeda{
     public:
         string nome;
-        string simbolo;
-        Moeda(string nome, string simbolo);
+        string codigo;
+        Moeda(string nome, string codigo);
 };

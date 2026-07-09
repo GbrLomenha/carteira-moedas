@@ -2,9 +2,14 @@
 #include <vector>
 using namespace std;
 
-class Mercado{
+class Mercado {
+    private:
+        vector<Moeda> moedasMercado; 
+        
     public:
         Mercado();
         vector<Moeda> listarMoedas();
-        double consultarCambio(Moeda moeda1, Moeda moeda2);
+        bool validarMoeda(string codigo); 
+        Moeda obterMoeda(string codigo);
+        double consultarCambio(Moeda moedaBase, Moeda moedaCambio);
 };

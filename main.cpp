@@ -33,9 +33,10 @@ int main() {
         minhaCarteira.definirMoedaPadrao(moedaPadrao);
         
         cout << "Carteira iniciada com sucesso!" << endl;
-    };
-
-    cout << "Dados carregados com sucesso de " << arquivoCarteira << "!" << endl;
+    }
+    else{
+        cout << "Dados carregados com sucesso de " << arquivoCarteira << "!" << endl;
+    }
 
     int opcao;
     do {
@@ -56,6 +57,7 @@ int main() {
             case 3:
                 break;
             case 4:
+                minhaCarteira.listarPosicao();
                 break;
             case 5:
                 break;
@@ -63,6 +65,10 @@ int main() {
                 break;
         };
     }while(opcao != 0);
+    
+    cout << "Salvando dados da carteira..." << endl;
+    minhaCarteira.salvarDados(arquivoCarteira);
+    cout << "Programa encerrado." << endl;
 
     return 0;
 }

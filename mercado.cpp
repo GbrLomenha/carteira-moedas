@@ -5,10 +5,7 @@ using namespace std;
 Mercado::Mercado() {
 
     //PROVISÓRIO -- Chamar aqui a api de listar moedas pra preencher o valor do atributo do mercado
-    moedasMercado.push_back(Moeda("Real", "BRL"));
-    moedasMercado.push_back(Moeda("Dolar", "USD"));
-    moedasMercado.push_back(Moeda("Euro", "EUR"));
-}
+    listarMoedas();
 
 void Mercado::listarMoedas() {
     vector<Moeda> moedasDisponiveis = getMoedasDisponieveis(); //getMoedasDisponiveis é uma funcao do Python

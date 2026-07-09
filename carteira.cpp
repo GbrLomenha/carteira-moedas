@@ -29,13 +29,11 @@ bool Carteira::carregarDados(string nomeArquivo, Mercado& mercado) {
 }
 
 void Carteira::salvarDados(string nomeArquivo) {
-    ofstream arquivo(nomeArquivo); // Abre o arquivo para escrita (cria se não existir)
+    ofstream arquivo(nomeArquivo);
     
     if (arquivo.is_open()) {
-        // 1. Salva a moeda padrão na primeira linha
         arquivo << moedaPadrao.nome << endl;
         
-        // 2. Salva as moedas da carteira (Sigla e Quantidade separadas por espaço)
         for (const auto& [sigla, quantidade] : moedas) {
             arquivo << sigla << " " << quantidade << endl;
         }

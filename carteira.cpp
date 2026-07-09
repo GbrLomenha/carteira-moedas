@@ -5,6 +5,8 @@
 
 using namespace std;
 
+Carteira::Carteira(Moeda moeda) : moedaPadrao(moeda) {}
+
 bool Carteira::carregarDados(string nomeArquivo, Mercado& mercado) {
     ifstream arquivo(nomeArquivo); 
     
@@ -32,7 +34,7 @@ void Carteira::salvarDados(string nomeArquivo) {
     ofstream arquivo(nomeArquivo);
     
     if (arquivo.is_open()) {
-        arquivo << moedaPadrao.nome << endl;
+        arquivo << moedaPadrao.codigo << endl;
         
         for (const auto& [sigla, quantidade] : moedas) {
             arquivo << sigla << " " << quantidade << endl;
@@ -45,7 +47,7 @@ void Carteira::salvarDados(string nomeArquivo) {
 }
 
 void Carteira:: definirMoedaPadrao(Moeda moedaPadrao){
-    moedaPadrao = moedaPadrao;
+    this->moedaPadrao = moedaPadrao;
 };
 
 void Carteira:: imprimirPosicaoMoedaUnica(string moeda, int quantidade){

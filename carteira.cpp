@@ -5,8 +5,6 @@
 
 using namespace std;
 
-Carteira::Carteira(Moeda moeda) : moedaPadrao(moeda) {}
-
 bool Carteira::carregarDados(string nomeArquivo, Mercado& mercado) {
     ifstream arquivo(nomeArquivo); 
     
@@ -18,7 +16,7 @@ bool Carteira::carregarDados(string nomeArquivo, Mercado& mercado) {
         }
         
         string sigla;
-        int quantidade;
+        double quantidade;
         while (arquivo >> sigla >> quantidade) {
             moedas[sigla] = quantidade;
         }
@@ -50,13 +48,13 @@ void Carteira::definirMoedaPadrao(Moeda moeda){
     this->moedaPadrao = moeda;
 }
 
-void Carteira::depositar(string codigo, int quantidade) {
+void Carteira::depositar(string codigo, double quantidade) {
     moedas[codigo] += quantidade;
     cout << "Deposito realizado com sucesso!" << endl;
     this->exibirSaldoMoeda(codigo);
 }
 
-bool Carteira::sacar(string codigo, int quantidade) {
+bool Carteira::sacar(string codigo, double quantidade) {
     if (moedas.find(codigo) == moedas.end()) {
         cout << "Erro: Voce nao possui a moeda " << codigo << " na carteira." << endl;
         return false;
@@ -80,15 +78,48 @@ bool Carteira::sacar(string codigo, int quantidade) {
     return true;
 }
 
+void Carteira::movimentarSaldo(Mercado& mercado) {
+    double tipoOperacao;
+    cout << "Escolha a operacao:" << endl;
+    cout << "1 - Depositar" << endl;
+    cout << "2 - Sacar" << endl;
+    cin >> tipoOperacao;
+
+    if (tipoOperacao != 1 && tipoOperacao != 2) {
+        cout << "Operacao invalida. Nenhuma movimentacao foi realizada." << endl;
+        return;
+    }
+
+    string codigo;
+    cout << "Digite o codigo da moeda (ex: BRL, USD): ";
+    cin >> codigo;
+    for (auto & c: codigo) c = toupper(c);
+
+    if (!mercado.validarMoeda(codigo)) {
+        cout << "Erro: A moeda '" << codigo << "' nao e suportada pelo mercado." << endl;
+        return;
+    }
+
+    double quantidade;
+    cout << "Digite a quantidade: ";
+    cin >> quantidade;
+
+    if (tipoOperacao == 1) {
+        this->depositar(codigo, quantidade);
+    } else if (tipoOperacao == 2) {
+        this->sacar(codigo, quantidade);
+    }
+}
+
 void Carteira:: exibirSaldoMoeda(string codigo){
     cout << "Saldo atualizado: " << moedas[codigo] << " " << codigo << endl;
 }
 
-void Carteira:: imprimirPosicaoMoedaUnica(string moeda, int quantidade){
+void Carteira:: imprimirPosicaoMoedaUnica(string moeda, double quantidade){
     cout << left << setw(10) << moeda << right << setw(15) << quantidade << endl;
 }
 
-void Carteira:: listarPosicao() {
+void Carteira:: listarPosicoes() {
     cout << "====LISTANDO POSICOES NA CARTEIRA====" << endl;
     cout << left << setw(10) << "Ativo" << right << setw(15) << "Quantidade" << endl;
 

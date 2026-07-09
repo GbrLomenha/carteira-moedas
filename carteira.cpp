@@ -46,13 +46,47 @@ void Carteira::salvarDados(string nomeArquivo) {
     }
 }
 
-void Carteira:: definirMoedaPadrao(Moeda moedaPadrao){
-    this->moedaPadrao = moedaPadrao;
-};
+void Carteira::definirMoedaPadrao(Moeda moeda){
+    this->moedaPadrao = moeda;
+}
+
+void Carteira::depositar(string codigo, int quantidade) {
+    moedas[codigo] += quantidade;
+    cout << "Deposito realizado com sucesso!" << endl;
+    this->exibirSaldoMoeda(codigo);
+}
+
+bool Carteira::sacar(string codigo, int quantidade) {
+    if (moedas.find(codigo) == moedas.end()) {
+        cout << "Erro: Voce nao possui a moeda " << codigo << " na carteira." << endl;
+        return false;
+    }
+
+    if (moedas[codigo] < quantidade) {
+        cout << "Erro: Saldo insuficiente. Saldo atual: " << moedas[codigo] << " " << codigo << endl;
+        return false;
+    }
+
+    moedas[codigo] -= quantidade;
+    
+    if (moedas[codigo] == 0) {
+        moedas.erase(codigo);
+        cout << "O saldo de " << codigo << " foi zerado. Moeda removida da carteira." << endl;
+    } else {
+        cout << "Saque realizado com sucesso!" << endl;
+        this->exibirSaldoMoeda(codigo);
+    }
+
+    return true;
+}
+
+void Carteira:: exibirSaldoMoeda(string codigo){
+    cout << "Saldo atualizado: " << moedas[codigo] << " " << codigo << endl;
+}
 
 void Carteira:: imprimirPosicaoMoedaUnica(string moeda, int quantidade){
     cout << left << setw(10) << moeda << right << setw(15) << quantidade << endl;
-};
+}
 
 void Carteira:: listarPosicao() {
     cout << "====LISTANDO POSICOES NA CARTEIRA====" << endl;
@@ -61,4 +95,4 @@ void Carteira:: listarPosicao() {
     for (const auto&[nomeMoeda, quantidade]: moedas){
         imprimirPosicaoMoedaUnica(nomeMoeda, quantidade);
     }   
-};
+}

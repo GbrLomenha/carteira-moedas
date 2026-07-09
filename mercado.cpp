@@ -10,8 +10,19 @@ Mercado::Mercado() {
     moedasMercado.push_back(Moeda("Euro", "EUR"));
 }
 
-vector<Moeda> Mercado::listarMoedas() {
-    return moedasMercado;
+void Mercado::listarMoedas() {
+    vector<Moeda> moedasDisponiveis = getMoedasDisponieveis(); //getMoedasDisponiveis é uma funcao do Python
+
+    //Filtrar o resultados JSON ou Já retornar o resultado filtrado??
+
+    if (moedasDisponiveis.empty()) {
+        cout << "Nenhuma moeda disponível no mercado." << endl;
+        return;
+    }
+
+    for (const Moeda& moeda : moedasDisponiveis) {
+        moedasMercado.push_back(moeda);
+    }
 }
 
 bool Mercado::validarMoeda(string codigoPassado) {

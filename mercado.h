@@ -8,7 +8,7 @@ class Mercado {
         
     public:
         Mercado();
-        vector<Moeda> listarMoedas();
+        void listarMoedas();
         bool validarMoeda(string codigo); 
         Moeda obterMoeda(string codigo);
         double consultarCambio(Moeda moedaBase, Moeda moedaCambio);

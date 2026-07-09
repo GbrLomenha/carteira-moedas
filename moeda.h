@@ -6,5 +6,6 @@ class Moeda{
     public:
         string nome;
         string codigo;
-        Moeda(string nome, string codigo);
+        double cotacao;
+        Moeda(string, string);
 };

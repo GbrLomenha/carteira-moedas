@@ -14,7 +14,7 @@ class Carteira{
         void depositar(string codigo, double quantidade);
         bool sacar(string codigo, double quantidade);
         void exibirSaldoMoeda(string codigo);
-        
+
     public:
         Carteira(Moeda moeda);
 
@@ -26,8 +26,8 @@ class Carteira{
         void listarPosicoes();
 
         void consolidarCarteira();
-        
+
         void movimentarSaldo(Mercado& mercadoAtivo);
-        
+
         void comprarMoeda(Mercado& mercado);
 };

@@ -53,13 +53,13 @@ int main() {
             case 1:
                 break;
             case 2:
-                void movimentarSaldo(Mercado& mercadoAtivo);
+                minhaCartiera.movimentarSaldo(Mercado& mercadoAtivo);
                 break;
             case 3:
-                void comprarMoeda(Mercado& mercadoAtivo);
+                minhaCarteira.comprarMoeda(Mercado& mercadoAtivo);
                 break;
             case 4:
-                void listarPosicoes();
+                minhacarteira.listarPosicoes();
                 break;
             case 5:
                 break;

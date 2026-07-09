@@ -11,6 +11,9 @@ class Carteira{
         unordered_map<string, int> moedas;
 
         void imprimirPosicaoMoedaUnica(string moeda, int quantiade);
+        void depositar(string codigo, int quantidade);
+        bool sacar(string codigo, int quantidade);
+        void exibirSaldoMoeda(string codigo);
         
     public:
         Carteira(Moeda moeda);
@@ -19,4 +22,5 @@ class Carteira{
         void definirMoedaPadrao(Moeda moeda);
         void listarPosicao();
         void consolidarCarteira();
+        void movimentarSaldo(int tipoOperacao, string codigo, int quantidade);
 };

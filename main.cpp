@@ -53,6 +53,7 @@ int main() {
             case 1:
                 break;
             case 2:
+                minhaCarteira.movimentarSaldo();
                 break;
             case 3:
                 break;
@@ -65,7 +66,7 @@ int main() {
                 break;
         };
     }while(opcao != 0);
-    
+
     cout << "Salvando dados da carteira..." << endl;
     minhaCarteira.salvarDados(arquivoCarteira);
     cout << "Programa encerrado." << endl;

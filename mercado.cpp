@@ -1,4 +1,5 @@
 #include "mercado.h"
+#include "carteira.h"
 #include <cstdio>
 #include <iostream>
 #include <stdexcept>
@@ -63,12 +64,25 @@ void Mercado::listarMoedas() {
     }
 }
 
-bool Mercado::validarMoeda(string codigoPassado) {
-    for (const auto& moeda : moedasMercado) {
-        if (moeda.codigo == codigoPassado) { 
-            return true;
+bool Mercado::validarMoeda(string codigoPassado, Carteira* carteira) {
+
+    if (carteira != nullptr) {
+        for (const auto& par : carteira->getMoedas()) {
+            const string& codigo = par.first;
+            if (codigo == codigoPassado) {
+                return true;
+            }
         }
     }
+
+    else{
+        for (const auto& moeda : moedasMercado) {
+            if (moeda.codigo == codigoPassado) { 
+                return true;
+            }
+        }
+    }
+
     return false;
 }
 
@@ -112,23 +126,35 @@ double Mercado::consultarCambio(Moeda moedaBase, Moeda moedaCambio) {
 
 }
 
-Moeda Mercado::escolherMoeda(){
+Moeda Mercado::escolherMoeda(Carteira* carteira) {
 
     while(true){
         //Listar moedas disponíveis para o usuário escolher
-        cout << "Moedas disponiveis no mercado:" << endl;
-        for (const Moeda& moeda : moedasMercado) {
-            cout << "Codigo: " << moeda.codigo <<"     "<< moeda.nome << endl;
+        if (carteira == nullptr){
+        cout << "Moedas disponiveis: " << endl;
+            for (const Moeda& moeda : moedasMercado) {
+                cout << "Codigo: " << moeda.codigo <<"     "<< moeda.nome << endl;
+            }
         }
+        else if (carteira != nullptr){
+            cout << "Moedas disponiveis: " << endl;
+            for (const auto& par : carteira->getMoedas()) {
+                const string& codigo = par.first;
+                cout << "Codigo: " << codigo <<"     "<< obterMoeda(codigo).nome << endl;
+            }
+        }
+
         string codigo;
         cout << "Digite o codigo da moeda (ex: BRL, USD): ";
         cin >> codigo;
         for (auto & c: codigo) c = toupper(c);
-        
-        if (!this->validarMoeda(codigo)) {
-            cout << "Erro: A moeda '" << codigo << "' nao e suportada pelo mercado." << endl;
+
+        if (!this->validarMoeda(codigo, carteira)) {
+            cout << "Erro: A moeda '" << codigo << "' nao e suportada." << endl;
             cout << "Por favor, tente novamente." << endl;
+            continue;
         }
+
         return obterMoeda(codigo);
     }
 }

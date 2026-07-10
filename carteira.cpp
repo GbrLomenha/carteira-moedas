@@ -40,6 +40,10 @@ void Carteira::salvarDados(string nomeArquivo) {
             string sigla = par.first;
             double quantidade = par.second;
 
+            if (sigla == "Desconhecida"){
+                continue;
+            }
+
             arquivo << sigla << " " << quantidade << endl;
         }
         
@@ -96,17 +100,37 @@ void Carteira::movimentarSaldo(Mercado& mercado) {
         return;
     }
 
-    Moeda moeda = mercado.escolherMoeda();
-
     double quantidade;
-    cout << "Digite a quantidade: ";
-    cin >> quantidade;
 
     if (tipoOperacao == 1) {
+        Moeda moeda = mercado.escolherMoeda();
+        if (verificarMoedaDesconhecida(moeda)) {
+            cout << "Operacao cancelada: moeda invalida." << endl;
+            return;
+        }
+        cout << "Digite a quantidade: ";
+        cin >> quantidade;
         this->depositar(moeda.codigo, quantidade);
     } else if (tipoOperacao == 2) {
+        if (moedas.empty()){
+            cout << "Sua carteira esta vazia. Nao ha o que sacar." << endl;
+            return;
+        }
+
+        Moeda moeda = mercado.escolherMoeda(this);
+
+        if (verificarMoedaDesconhecida(moeda)) {
+            cout << "Operacao cancelada: moeda invalida." << endl;
+            return;
+        }
+        cout << "Digite a quantidade: ";
+        cin >> quantidade;
         this->sacar(moeda.codigo, quantidade);
     }
+}
+
+bool Carteira::verificarMoedaDesconhecida(const Moeda& moeda) {
+    return moeda.codigo == "Desconhecida";
 }
 
 void Carteira:: exibirSaldoMoeda(string codigo){
@@ -131,12 +155,24 @@ void Carteira:: listarPosicoes() {
 
 void Carteira::comprarMoeda(Mercado& mercado) {
     cout << "\n--- COMPRAR MOEDA ---" << endl;
+     if (moedas.empty()) {
+        cout << "Sua carteira esta vazia. Ta duro dorme." << endl;
+        return;
+    }
     
     cout << "Escolha a moeda que voce deseja COMPRAR: ";
     Moeda moedaDestino = mercado.escolherMoeda();
+     if (verificarMoedaDesconhecida(moedaDestino)) {
+            cout << "Operacao cancelada: moeda invalida." << endl;
+            return;
+        }
 
     cout << "Escolha a moeda que voce vai USAR PARA PAGAR: ";
-    Moeda moedaOrigem = mercado.escolherMoeda();
+    Moeda moedaOrigem = mercado.escolherMoeda(this);
+     if (verificarMoedaDesconhecida(moedaOrigem)) {
+            cout << "Operacao cancelada: moeda invalida." << endl;
+            return;
+        }
 
     if (moedas.find(moedaOrigem.codigo) == moedas.end() || moedas[moedaOrigem.codigo] <= 0) {
         cout << "Erro: Voce nao possui saldo de " << moedaOrigem.nome << " para usar." << endl;
@@ -224,7 +260,6 @@ void Carteira::consolidarCarteira(Mercado& mercado) {
     cout << left << setw(10) << "Ativo" << right << setw(15) << "Quantidade" << setw(20) << "Valor (" + moedaPadrao.codigo + ")" << setw(15) << "Exposicao" << endl;
 
     for (const auto& par : moedas) {
-        
         const string& codigo = par.first;
         double quantidade = par.second;
 
@@ -236,4 +271,8 @@ void Carteira::consolidarCarteira(Mercado& mercado) {
         cout << left << setw(10) << codigo << right << setw(15) << quantidade << setw(20) << valoresConvertidos[codigo] << setw(14) << exposicao << "%" << endl;
     }
     cout << "============================================================" << endl;
+}
+
+unordered_map<string, double> Carteira::getMoedas() {
+    return moedas;
 }

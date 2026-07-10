@@ -6,6 +6,7 @@
 using namespace std;
 
 class Carteira{
+    
     private:
         Moeda moedaPadrao;
         unordered_map<string, double> moedas;

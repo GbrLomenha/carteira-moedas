@@ -46,6 +46,7 @@ void Carteira::salvarDados(string nomeArquivo) {
 
 void Carteira::definirMoedaPadrao(Moeda moeda){
     this->moedaPadrao = moeda;
+    cout << "A nova moeda padrão é '" << moedaPadrao.nome << "'." << endl;
 }
 
 void Carteira::depositar(string codigo, double quantidade) {
@@ -90,24 +91,16 @@ void Carteira::movimentarSaldo(Mercado& mercado) {
         return;
     }
 
-    string codigo;
-    cout << "Digite o codigo da moeda (ex: BRL, USD): ";
-    cin >> codigo;
-    for (auto & c: codigo) c = toupper(c);
-
-    if (!mercado.validarMoeda(codigo)) {
-        cout << "Erro: A moeda '" << codigo << "' nao e suportada pelo mercado." << endl;
-        return;
-    }
+    Moeda moeda = mercado.escolherMoeda();
 
     double quantidade;
     cout << "Digite a quantidade: ";
     cin >> quantidade;
 
     if (tipoOperacao == 1) {
-        this->depositar(codigo, quantidade);
+        this->depositar(moeda.codigo, quantidade);
     } else if (tipoOperacao == 2) {
-        this->sacar(codigo, quantidade);
+        this->sacar(moeda.codigo, quantidade);
     }
 }
 
@@ -130,37 +123,24 @@ void Carteira:: listarPosicoes() {
 
 void Carteira::comprarMoeda(Mercado& mercado) {
     cout << "\n--- COMPRAR MOEDA ---" << endl;
-
-    //Listar moedas aqui para mostrar opções
     
-    string codigoDestino;
-    cout << "Digite o codigo da moeda que voce deseja COMPRAR (ex: USD): ";
-    cin >> codigoDestino;
-    for (auto & c: codigoDestino) c = toupper(c);
+    cout << "Escolha a moeda que voce deseja COMPRAR: ";
+    Moeda moedaDestino = mercado.escolherMoeda();
 
-    if (!mercado.validarMoeda(codigoDestino)) {
-        cout << "Erro: A moeda '" << codigoDestino << "' nao e suportada pelo mercado." << endl;
+    cout << "Escolha a moeda que voce vai USAR PARA PAGAR: ";
+    Moeda moedaOrigem = mercado.escolherMoeda();
+
+    if (moedas.find(moedaOrigem.codigo) == moedas.end() || moedas[moedaOrigem.codigo] <= 0) {
+        cout << "Erro: Voce nao possui saldo de " << moedaOrigem.nome << " para usar." << endl;
         return;
     }
 
-    string codigoOrigem;
-    cout << "Digite o codigo da moeda que voce vai USAR PARA PAGAR (ex: BRL): ";
-    cin >> codigoOrigem;
-    for (auto & c: codigoOrigem) c = toupper(c);
-
-    if (moedas.find(codigoOrigem) == moedas.end() || moedas[codigoOrigem] <= 0) {
-        cout << "Erro: Voce nao possui saldo de " << codigoOrigem << " para usar." << endl;
-        return;
-    }
-
-    Moeda origem = mercado.obterMoeda(codigoOrigem);
-    Moeda destino = mercado.obterMoeda(codigoDestino);
-    double taxa = mercado.consultarCambio(origem, destino);
+    double taxa = mercado.consultarCambio(moedaOrigem, moedaDestino);
 
     int opcaoTroca;
     cout << endl << "Como voce deseja definir a conversao?" << endl;
-    cout << "1 - Quero definir o valor exato de " << codigoOrigem << " que vou GASTAR." << endl;
-    cout << "2 - Quero definir o valor exato de " << codigoDestino << " que vou OBTER." << endl;
+    cout << "1 - Quero definir o valor exato de " << moedaOrigem.nome << " que vou GASTAR." << endl;
+    cout << "2 - Quero definir o valor exato de " << moedaDestino.nome << " que vou OBTER." << endl;
     cout << "Escolha a opcao: ";
     cin >> opcaoTroca;
 
@@ -168,13 +148,13 @@ void Carteira::comprarMoeda(Mercado& mercado) {
     int quantidadeRecebida = 0;
 
     if (opcaoTroca == 1) {
-        cout << "Quanto de " << codigoOrigem << " voce quer gastar? (Saldo atual: " << moedas[codigoOrigem] << "): ";
+        cout << "Quanto de " << moedaOrigem.nome << " voce quer gastar? (Saldo atual: " << moedas[moedaOrigem.codigo] << "): ";
         cin >> quantidadePaga;
         
         quantidadeRecebida = quantidadePaga * taxa; 
         
     } else if (opcaoTroca == 2) {
-        cout << "Quanto de " << codigoDestino << " voce quer obter/comprar?: ";
+        cout << "Quanto de " << moedaDestino.nome << " voce quer obter/comprar?: ";
         cin >> quantidadeRecebida;
         quantidadePaga = quantidadeRecebida / taxa;
         
@@ -183,8 +163,8 @@ void Carteira::comprarMoeda(Mercado& mercado) {
         return;
     }
 
-    if (quantidadePaga > moedas[codigoOrigem]) {
-        cout << "Erro: Saldo insuficiente. A operacao exige " << quantidadePaga << " " << codigoOrigem << ", mas voce so possui " << moedas[codigoOrigem] << "." << endl;
+    if (quantidadePaga > moedas[moedaOrigem.codigo]) {
+        cout << "Erro: Saldo insuficiente. A operacao exige " << quantidadePaga << " " << moedaOrigem.nome << ", mas voce so possui " << moedas[moedaOrigem.codigo] << "." << endl;
         return;
     }
 
@@ -193,8 +173,8 @@ void Carteira::comprarMoeda(Mercado& mercado) {
         return;
     }
 
-    cout << "\nResumo: Convertendo " << quantidadePaga << " " << codigoOrigem << " para " << quantidadeRecebida << " " << codigoDestino << " (Taxa: " << taxa << ")" << endl;
+    cout << "\nResumo: Convertendo " << quantidadePaga << " " << moedaOrigem.nome << " para " << quantidadeRecebida << " " << moedaDestino.nome << " (Taxa: " << taxa << ")" << endl;
 
-    this->sacar(codigoOrigem, quantidadePaga);
-    this->depositar(codigoDestino, quantidadeRecebida);
+    this->sacar(moedaOrigem.codigo, quantidadePaga);
+    this->depositar(moedaDestino.codigo, quantidadeRecebida);
 }

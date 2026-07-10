@@ -5,11 +5,13 @@ using namespace std;
 class Mercado {
     private:
         vector<Moeda> moedasMercado; 
+
+        bool validarMoeda(string codigo); 
+        void listarMoedas();
         
     public:
         Mercado();
-        void listarMoedas();
-        bool validarMoeda(string codigo); 
         Moeda obterMoeda(string codigo);
         double consultarCambio(Moeda moedaBase, Moeda moedaCambio);
+        Moeda escolherMoeda();
 };

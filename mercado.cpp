@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <string>
 #include <sstream>
+#include <unordered_map>
 #include <iomanip>
 
 using namespace std;
@@ -123,11 +124,29 @@ Moeda Mercado::escolherMoeda(){
         cout << "Digite o codigo da moeda (ex: BRL, USD): ";
         cin >> codigo;
         for (auto & c: codigo) c = toupper(c);
-    
+        
         if (!this->validarMoeda(codigo)) {
             cout << "Erro: A moeda '" << codigo << "' nao e suportada pelo mercado." << endl;
             cout << "Por favor, tente novamente." << endl;
         }
         return obterMoeda(codigo);
     }
+}
+
+//TROCAR DEPOIS DA API DE CONSULTAR CAMBIO
+double Mercado::consultarCambio(Moeda moedaBase, Moeda moedaCambio) {
+
+    return 2.0; 
+}
+
+unordered_map<string, double> Mercado::compilarCambioMercado(Moeda moedaBase){
+    cout << "Consultando cotacoes no mercado..." << endl;
+    unordered_map<string, double> taxasDoMomento = ;//chama a api aqui bebeto
+
+    if (taxasDoMomento.empty()) {
+        cout << "Erro: Nao foi possivel obter as cotacoes do mercado." << endl;
+        return;
+    }
+
+    return taxasDoMomento;
 }

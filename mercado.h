@@ -1,5 +1,6 @@
 #include "moeda.h"
 #include <vector>
+#include <unordered_map>
 
 #ifndef MERCADO_H
 #define MERCADO_H
@@ -17,8 +18,9 @@ class Mercado {
         
         Mercado();
         Moeda obterMoeda(string codigo);
-        double consultarCambio(Moeda moedaBase, Moeda moedaCambio);
         Moeda escolherMoeda();
+        double consultarCambio(Moeda moedaBase, Moeda moedaCambio);
+        unordered_map<string, double> compilarCambioMercado(Moeda moedaBase);
 };
 
 #endif

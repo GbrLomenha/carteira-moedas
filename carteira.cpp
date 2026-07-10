@@ -51,7 +51,7 @@ void Carteira::salvarDados(string nomeArquivo) {
 
 void Carteira::definirMoedaPadrao(Moeda moeda){
     this->moedaPadrao = moeda;
-    cout << "A nova moeda padrão é '" << moedaPadrao.nome << "'." << endl;
+    cout << "A nova moeda padrao eh '" << moedaPadrao.nome << "'." << endl;
 }
 
 void Carteira::depositar(string codigo, double quantidade) {

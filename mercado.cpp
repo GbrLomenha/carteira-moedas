@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <string>
 #include <sstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -18,7 +19,8 @@ void Mercado::listarMoedas() {
     moedasMercado.clear();
 
     // comando para rodar o python passando o argumento listar
-    string comando = "python3 api.py getMoedasDisponiveis";
+    //No Windows utilizar apenas python e no Linux utilizar python3
+    string comando = "python api.py getMoedasDisponiveis";
     
     // abre um pipe para ler a saida do python
     //abre um fork child sendo o processo do python e o processo pai continua a execucao do programa (c++)
@@ -85,8 +87,13 @@ double Mercado::consultarCambio(Moeda moedaBase, Moeda moedaCambio) {
 }
 
 Moeda Mercado::escolherMoeda(){
+
     while(true){
-        this->listarMoedas();
+        //Listar moedas disponíveis para o usuário escolher
+        cout << "Moedas disponiveis no mercado:" << endl;
+        for (const Moeda& moeda : moedasMercado) {
+            cout << "Codigo: " << moeda.codigo <<"     "<< moeda.nome << endl;
+        }
         string codigo;
         cout << "Digite o codigo da moeda (ex: BRL, USD): ";
         cin >> codigo;

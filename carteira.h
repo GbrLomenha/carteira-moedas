@@ -15,9 +15,11 @@ class Carteira{
         void depositar(string codigo, double quantidade);
         bool sacar(string codigo, double quantidade);
         void exibirSaldoMoeda(string codigo);
+        bool verificarMoedaDesconhecida(const Moeda&);
 
     public:
         Carteira(Moeda moeda);
+        unordered_map<string, double> getMoedas();
 
         bool carregarDados(string nomeArquivo, Mercado& mercadoAtivo);
         void salvarDados(string nomeArquivo);

@@ -30,7 +30,7 @@ int main() {
         cout << "2 - Fazer deposito ou saque na carteira" << endl;
         cout << "3 - Comprar moeda" << endl;
         cout << "4 - Listar posicaoo da carteira" << endl;
-        cout << "5 - Consolidar padtrimônio e exposicoes" << endl;
+        cout << "5 - Consolidar padtrimonio e exposicoes" << endl;
         cout << "0 - Sair" << endl;
         cin >> opcao;
 

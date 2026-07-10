@@ -15,6 +15,7 @@ int main() {
     if (!minhaCarteira.carregarDados(arquivoCarteira, mercadoAtivo)) {
         cout << "=== BEM-VINDO AO GERENCIADOR DE CARTEIRA ===" << endl;
 
+        cout << "Escolha a moeda padrao do sistema." << endl;
         minhaCarteira.definirMoedaPadrao(mercadoAtivo.escolherMoeda());
         
         cout << "Carteira iniciada com sucesso!" << endl;

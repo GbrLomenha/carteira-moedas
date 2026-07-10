@@ -29,5 +29,7 @@ class Carteira{
 
         void movimentarSaldo(Mercado& mercadoAtivo);
 
-        void comprarMoeda(Mercado& mercado);
+        void comprarMoeda(Mercado& mercadoAtivo);
+
+        void consolidarCarteira(Mercado& mercadoAtivo);
 };

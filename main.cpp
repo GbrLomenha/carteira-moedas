@@ -48,6 +48,7 @@ int main() {
                 minhaCarteira.listarPosicoes();
                 break;
             case 5:
+                minhaCarteira.consolidarCarteira(mercadoAtivo);
                 break;
             default:
                 break;

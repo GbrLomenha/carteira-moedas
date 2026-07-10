@@ -180,3 +180,46 @@ void Carteira::comprarMoeda(Mercado& mercado) {
     this->sacar(moedaOrigem.codigo, quantidadePaga);
     this->depositar(moedaDestino.codigo, quantidadeRecebida);
 }
+
+void Carteira::consolidarCarteira(Mercado& mercado) {
+    if (moedas.empty()) {
+        cout << "Sua carteira esta vazia. Nao ha o que consolidar." << endl;
+        return;
+    }
+    
+    unordered_map<string, double> taxasDoMomento = mercado.compilarCambioMercado(moedaPadrao);
+    
+    // CALCULO PL
+    double patrimonioLiquido = 0.0;
+    unordered_map<string, double> valoresConvertidos; 
+
+    for (const auto& [codigo, quantidade] : moedas) {
+        if (taxasDoMomento.find(codigo) == taxasDoMomento.end()) {
+            cout << "Aviso: Cotacao para " << codigo << " nao encontrada. O ativo sera zerado no PL." << endl;
+            valoresConvertidos[codigo] = 0.0;
+            continue;
+        }
+
+        double valorConvertido = quantidade / taxasDoMomento[codigo];
+        valoresConvertidos[codigo] = valorConvertido;
+        patrimonioLiquido += valorConvertido;
+    }
+
+    cout << endl << "==== CONSOLIDACAO DE PATRIMONIO ====" << endl;
+    cout << "Moeda Padrao: " << moedaPadrao.nome << " (" << moedaPadrao.codigo << ")" << endl;
+    cout << "Patrimonio Liquido (PL): " << fixed << setprecision(2) << patrimonioLiquido << " " << moedaPadrao.codigo << endl;
+    cout << "------------------------------------------------------------" << endl;
+    
+    // CALCAULO EXPOSICAO
+    cout << left << setw(10) << "Ativo" << right << setw(15) << "Quantidade" << setw(20) << "Valor (" + moedaPadrao.codigo + ")" << setw(15) << "Exposicao" << endl;
+
+    for (const auto& [codigo, quantidade] : moedas) {
+        double exposicao = 0.0;
+        if (patrimonioLiquido > 0) {
+            exposicao = (valoresConvertidos[codigo] / patrimonioLiquido) * 100.0;
+        }
+
+        cout << left << setw(10) << codigo << right << setw(15) << quantidade << setw(20) << valoresConvertidos[codigo] << setw(14) << exposicao << "%" << endl;
+    }
+    cout << "============================================================" << endl;
+}

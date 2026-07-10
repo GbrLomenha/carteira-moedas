@@ -42,7 +42,41 @@ def getMoedasDisponiveis():
         # se der erro de conexao nao imprime nada
         pass
 
+def getCambio(moedaBase, moedaCambio):
+
+#     #exemplo json retornado:
+#     {
+# 	"result": "success",
+# 	"documentation": "https://www.exchangerate-api.com/docs",
+# 	"terms_of_use": "https://www.exchangerate-api.com/terms",
+# 	"time_last_update_unix": 1585267200,
+# 	"time_last_update_utc": "Fri, 27 Mar 2020 00:00:00 +0000",
+# 	"time_next_update_unix": 1585270800,
+# 	"time_next_update_utc": "Sat, 28 Mar 2020 01:00:00 +0000",
+# 	"base_code": "EUR",
+# 	"target_code": "GBP",
+# 	"conversion_rate": 0.8412
+# }
+
+    url = f"https://v6.exchangerate-api.com/v6/{token}/pair/{moedaBase}/{moedaCambio}"
+    try:
+        response = requests.get(url)
+        dados = response.json()
+
+        #FILTRO JSON:
+        # acessa a lista de moedas dentro do json
+        if dados.get("result") == "success":
+            taxaCambio = dados.get("conversion_rate")
+            print(f"{taxaCambio}")
+            
+    except Exception as e:
+        # se der erro de conexao nao imprime nada
+        pass
+
+
 # verifica se o c++ chamou o script passando o argumento correto
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "getMoedasDisponiveis":
         getMoedasDisponiveis()
+    elif len(sys.argv) > 3 and sys.argv[1] == "getCambio":
+        getCambio(sys.argv[2], sys.argv[3])

@@ -83,7 +83,32 @@ Moeda Mercado::obterMoeda(string codigoPassado) {
 //TROCAR DEPOIS DA API DE CONSULTAR CAMBIO
 double Mercado::consultarCambio(Moeda moedaBase, Moeda moedaCambio) {
 
-    return 2.0; 
+    string comando = "python api.py getCambio " + moedaBase.codigo + " " + moedaCambio.codigo;
+
+    FILE* pipe = _popen(comando.c_str(), "r");
+    if (!pipe) {
+        cout << "Erro ao abrir o script de integracao externo." << endl;
+        return 0.0; 
+    }
+
+    char buffer[256];
+    double taxaCambio = 0.0;
+    
+    // le a saida do python linha por linha
+    if (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        string linha(buffer);
+        
+        // remove a quebra de linha do final se existir
+        if (!linha.empty() && linha.back() == '\n') {
+            linha.pop_back();
+        }
+        taxaCambio = stod(linha);
+    }
+    // fecha o pipe 
+    _pclose(pipe);
+
+    return taxaCambio;
+
 }
 
 Moeda Mercado::escolherMoeda(){

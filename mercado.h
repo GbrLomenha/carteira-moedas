@@ -9,12 +9,13 @@ using namespace std;
 
 class Mercado {
     private:
-        vector<Moeda> moedasMercado; 
 
         bool validarMoeda(string codigo); 
         void listarMoedas();
         
     public:
+        vector<Moeda> moedasMercado; 
+        
         Mercado();
         Moeda obterMoeda(string codigo);
         Moeda escolherMoeda();

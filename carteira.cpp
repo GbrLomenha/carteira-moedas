@@ -36,7 +36,10 @@ void Carteira::salvarDados(string nomeArquivo) {
     if (arquivo.is_open()) {
         arquivo << moedaPadrao.codigo << endl;
         
-        for (const auto& [sigla, quantidade] : moedas) {
+        for (const auto& par : moedas) {
+            string sigla = par.first;
+            double quantidade = par.second;
+
             arquivo << sigla << " " << quantidade << endl;
         }
         
@@ -48,7 +51,7 @@ void Carteira::salvarDados(string nomeArquivo) {
 
 void Carteira::definirMoedaPadrao(Moeda moeda){
     this->moedaPadrao = moeda;
-    cout << "A nova moeda padrão é '" << moedaPadrao.nome << "'." << endl;
+    cout << "A nova moeda padrao eh '" << moedaPadrao.nome << "'." << endl;
 }
 
 void Carteira::depositar(string codigo, double quantidade) {
@@ -118,9 +121,12 @@ void Carteira:: listarPosicoes() {
     cout << "====LISTANDO POSICOES NA CARTEIRA====" << endl;
     cout << left << setw(10) << "Ativo" << right << setw(15) << "Quantidade" << endl;
 
-    for (const auto&[nomeMoeda, quantidade]: moedas){
+    for (const auto& par : moedas) {
+        string nomeMoeda = par.first;
+        double quantidade = par.second;
+
         imprimirPosicaoMoedaUnica(nomeMoeda, quantidade);
-    }   
+    }
 }
 
 void Carteira::comprarMoeda(Mercado& mercado) {

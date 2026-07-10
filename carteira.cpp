@@ -199,7 +199,11 @@ void Carteira::consolidarCarteira(Mercado& mercado) {
     double patrimonioLiquido = 0.0;
     unordered_map<string, double> valoresConvertidos; 
 
-    for (const auto& [codigo, quantidade] : moedas) {
+    for (const auto& par : moedas) {
+
+        const string& codigo = par.first;
+        double quantidade = par.second;
+
         if (taxasDoMomento.find(codigo) == taxasDoMomento.end()) {
             cout << "Aviso: Cotacao para " << codigo << " nao encontrada. O ativo sera zerado no PL." << endl;
             valoresConvertidos[codigo] = 0.0;
@@ -219,7 +223,11 @@ void Carteira::consolidarCarteira(Mercado& mercado) {
     // CALCAULO EXPOSICAO
     cout << left << setw(10) << "Ativo" << right << setw(15) << "Quantidade" << setw(20) << "Valor (" + moedaPadrao.codigo + ")" << setw(15) << "Exposicao" << endl;
 
-    for (const auto& [codigo, quantidade] : moedas) {
+    for (const auto& par : moedas) {
+        
+        const string& codigo = par.first;
+        double quantidade = par.second;
+
         double exposicao = 0.0;
         if (patrimonioLiquido > 0) {
             exposicao = (valoresConvertidos[codigo] / patrimonioLiquido) * 100.0;

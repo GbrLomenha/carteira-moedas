@@ -33,7 +33,7 @@ void Mercado::listarMoedas() {
         return;
     }
     
-    char buffer[256];
+    char buffer[1024];
     // le a saida do python linha por linha
     while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
         string linha(buffer);
@@ -133,20 +133,43 @@ Moeda Mercado::escolherMoeda(){
     }
 }
 
-//TROCAR DEPOIS DA API DE CONSULTAR CAMBIO
-double Mercado::consultarCambio(Moeda moedaBase, Moeda moedaCambio) {
+unordered_map<string, double> Mercado::compilarCambioMercado(Moeda moedaBase) {
 
-    return 2.0; 
-}
+    unordered_map<string, double> resposta;
 
-unordered_map<string, double> Mercado::compilarCambioMercado(Moeda moedaBase){
-    cout << "Consultando cotacoes no mercado..." << endl;
-    unordered_map<string, double> taxasDoMomento = ;//chama a api aqui bebeto
-
-    if (taxasDoMomento.empty()) {
-        cout << "Erro: Nao foi possivel obter as cotacoes do mercado." << endl;
-        return;
+   // comando para rodar o python passando o argumento listar
+    //No Windows utilizar apenas python e no Linux utilizar python3
+    string comando = "python api.py getCambioBase " + moedaBase.codigo;
+    
+    FILE* pipe = _popen(comando.c_str(), "r");
+    
+    if (!pipe) {
+        cout << "erro ao abrir o script de integracao externo." << endl;
+        return resposta;
     }
+    
+    char buffer[256];
+    // le a saida do python linha por linha
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        string linha(buffer);
+        
+        // remove a quebra de linha do final se existir
+        if (!linha.empty() && linha.back() == '\n') {
+            linha.pop_back();
+        }
+        
+        // divide a string usando o caractere , como separador
+        stringstream ss(linha);
+        string codigo;
+        string taxa;
+        
+        if (getline(ss, codigo, ',') && getline(ss, taxa, ',')) {
+            resposta[codigo] = stod(taxa);
+        }
+    }
+    
+    // fecha o pipe 
+    _pclose(pipe);
 
-    return taxasDoMomento;
+    return resposta;
 }

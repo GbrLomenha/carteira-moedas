@@ -73,10 +73,58 @@ def getCambio(moedaBase, moedaCambio):
         # se der erro de conexao nao imprime nada
         pass
 
+def getCambioBase(moedaBase):
+
+#     #exemplo json retornado:
+#     {
+# 	"result": "success",
+# 	"documentation": "https://www.exchangerate-api.com/docs",
+# 	"terms_of_use": "https://www.exchangerate-api.com/terms",
+# 	"time_last_update_unix": 1585267200,
+# 	"time_last_update_utc": "Fri, 27 Mar 2020 00:00:00 +0000",
+# 	"time_next_update_unix": 1585353700,
+# 	"time_next_update_utc": "Sat, 28 Mar 2020 00:00:00 +0000",
+# 	"base_code": "USD",
+# 	"conversion_rates": {
+# 		"USD": 1,
+# 		"AUD": 1.4817,
+# 		"BGN": 1.7741,
+# 		"CAD": 1.3168,
+# 		"CHF": 0.9774,
+# 		"CNY": 6.9454,
+# 		"EGP": 15.7361,
+# 		"EUR": 0.9013,
+# 		"GBP": 0.7679,
+# 		"...": 7.8536,
+# 		"...": 1.3127,
+# 		"...": 7.4722, etc. etc.
+# 	}
+# }
+    url = f'https://v6.exchangerate-api.com/v6/{token}/latest/{moedaBase}'
+
+    try:
+        response = requests.get(url)
+        dados = response.json()
+
+        #FILTRO JSON:
+        # acessa a lista de moedas dentro do json
+        if (dados.get("result") == "success"):
+            for codigo, taxa in dados.get("conversion_rates", {}).items():
+                print(f"{codigo},{taxa}")
+            
+    except Exception as e:
+        # se der erro de conexao nao imprime nada
+        pass
+
+
 
 # verifica se o c++ chamou o script passando o argumento correto
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "getMoedasDisponiveis":
         getMoedasDisponiveis()
+
+    elif len(sys.argv) > 2 and sys.argv[1] == "getCambioBase":
+        getCambioBase(sys.argv[2])
+
     elif len(sys.argv) > 3 and sys.argv[1] == "getCambio":
         getCambio(sys.argv[2], sys.argv[3])

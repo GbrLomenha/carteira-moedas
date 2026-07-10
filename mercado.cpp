@@ -75,6 +75,7 @@ Moeda Mercado::obterMoeda(string codigoPassado) {
             return moeda;
         }
     }
+    return Moeda("Desconhecida", codigoPassado);
 }
 
 //TROCAR DEPOIS DA API DE CONSULTAR CAMBIO

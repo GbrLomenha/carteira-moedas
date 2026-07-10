@@ -1,5 +1,9 @@
 #include <string>
 #include <iostream>
+
+#ifndef MOEDA_H
+#define MOEDA_H
+
 using namespace std;
 
 class Moeda{
@@ -8,3 +12,4 @@ class Moeda{
         string codigo;
         Moeda(string, string);
 };
+#endif

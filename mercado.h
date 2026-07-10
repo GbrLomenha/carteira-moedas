@@ -1,5 +1,9 @@
 #include "moeda.h"
 #include <vector>
+
+#ifndef MERCADO_H
+#define MERCADO_H
+
 using namespace std;
 
 class Mercado {
@@ -13,3 +17,5 @@ class Mercado {
         Moeda obterMoeda(string codigo);
         double consultarCambio(Moeda moedaBase, Moeda moedaCambio);
 };
+
+#endif

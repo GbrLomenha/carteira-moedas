@@ -34,7 +34,7 @@ void Mercado::listarMoedas() {
         return;
     }
     
-    char buffer[1024];
+    char buffer[256];
     // le a saida do python linha por linha
     while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
         string linha(buffer);
@@ -100,6 +100,9 @@ double Mercado::consultarCambio(Moeda moedaBase, Moeda moedaCambio) {
 
     string comando = "python api.py getCambio " + moedaBase.codigo + " " + moedaCambio.codigo;
 
+    // abre um pipe para ler a saida do python
+    //abre um fork child sendo o processo do python e o processo pai continua a execucao do programa (c++)
+    // Usando _popen para abrir no windows, se fosse linux seria so popen
     FILE* pipe = _popen(comando.c_str(), "r");
     if (!pipe) {
         cout << "Erro ao abrir o script de integracao externo." << endl;
@@ -129,20 +132,58 @@ double Mercado::consultarCambio(Moeda moedaBase, Moeda moedaCambio) {
 Moeda Mercado::escolherMoeda(Carteira* carteira) {
 
     while(true){
-        //Listar moedas disponíveis para o usuário escolher
-        if (carteira == nullptr){
-        cout << "Moedas disponiveis: " << endl;
-            for (const Moeda& moeda : moedasMercado) {
-                cout << "Codigo: " << moeda.codigo <<"     "<< moeda.nome << endl;
-            }
+        // listar moedas disponiveis para o usuario escolher
+if (carteira == nullptr) {
+    cout << "Moedas disponiveis no mercado:" << endl;
+    cout << "--------------------------------------------------------------------------------" << endl;
+    
+    int colunas = 5; // define o numero de colunas paralelas
+    int contador = 0;
+    
+    for (const Moeda& moeda : moedasMercado) {
+        // limita o tamanho do nome exibido para nao estourar a coluna
+        string nomeExibicao = moeda.nome.substr(0, 18);
+        string item = "[" + moeda.codigo + "] " + nomeExibicao;
+        
+        // deixa cada coluna com exatamente 26 caracteres de largura
+        cout << left << setw(26) << item;
+        
+        contador++;
+        // se atingiu o limite de colunas, quebra a linha
+        if (contador % colunas == 0) {
+            cout << endl;
         }
-        else if (carteira != nullptr){
-            cout << "Moedas disponiveis: " << endl;
-            for (const auto& par : carteira->getMoedas()) {
-                const string& codigo = par.first;
-                cout << "Codigo: " << codigo <<"     "<< obterMoeda(codigo).nome << endl;
-            }
+    }
+    // garante uma quebra de linha no final se a ultima linha nao completou as colunas
+    if (contador % colunas != 0) {
+        cout << endl;
+    }
+    cout << "--------------------------------------------------------------------------------" << endl;
+}
+else if (carteira != nullptr) {
+    cout << "Moedas disponiveis na sua carteira:" << endl;
+    cout << "--------------------------------------------------------------------------------" << endl;
+    
+    int colunas = 5;
+    int contador = 0;
+    
+    for (const auto& par : carteira->getMoedas()) {
+        const string& codigo = par.first;
+        string nomeExibicao = obterMoeda(codigo).nome.substr(0, 18);
+        string item = "[" + codigo + "] " + nomeExibicao;
+        
+        cout << left << setw(26) << item;
+        
+        contador++;
+        if (contador % colunas == 0) {
+            cout << endl;
         }
+    }
+    if (contador % colunas != 0) {
+        cout << endl;
+    }
+    cout << "--------------------------------------------------------------------------------" << endl;
+}
 
         string codigo;
         cout << "Digite o codigo da moeda (ex: BRL, USD): ";
@@ -177,8 +218,8 @@ unordered_map<string, double> Mercado::compilarCambioMercado(Moeda moedaBase) {
     char buffer[256];
     // le a saida do python linha por linha
     while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
-        string linha(buffer);
-        
+        string linha = buffer;
+
         // remove a quebra de linha do final se existir
         if (!linha.empty() && linha.back() == '\n') {
             linha.pop_back();

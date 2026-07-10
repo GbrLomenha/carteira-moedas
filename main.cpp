@@ -15,27 +15,13 @@ int main() {
     if (!minhaCarteira.carregarDados(arquivoCarteira, mercadoAtivo)) {
         cout << "=== BEM-VINDO AO GERENCIADOR DE CARTEIRA ===" << endl;
 
-        //Listar aqui os códigos de moedas disponíveis para selecionar a moeda padrão da carteira 
-
-        string codigoMoedaPadrao;
-        while (true){
-            cout << "Digite a sigla da sua Moeda Padrao (ex: BRL, USD): ";
-            cin >> codigoMoedaPadrao;
-            for (auto & c: codigoMoedaPadrao) c = toupper(c);
-            if(mercadoAtivo.validarMoeda(codigoMoedaPadrao)){
-                break;
-            }
-            cout << "Erro: Moeda com código '" << codigoMoedaPadrao << "' nao encontrada no mercado." << endl;
-            cout << "Por favor, tente novamente." << endl;
-        };
-
-        Moeda moedaPadrao = mercadoAtivo.obterMoeda(codigoMoedaPadrao); 
-        minhaCarteira.definirMoedaPadrao(moedaPadrao);
+        minhaCarteira.definirMoedaPadrao(mercadoAtivo.escolherMoeda());
         
         cout << "Carteira iniciada com sucesso!" << endl;
-    };
-
-    cout << "Dados carregados com sucesso de " << arquivoCarteira << "!" << endl;
+    }
+    else{
+        cout << "Dados carregados com sucesso de " << arquivoCarteira << "!" << endl;
+    }
 
     int opcao;
     do {
@@ -50,12 +36,16 @@ int main() {
 
         switch (opcao) {
             case 1:
+                mercadoAtivo.escolherMoeda();
                 break;
             case 2:
+                minhaCarteira.movimentarSaldo(Mercado& mercadoAtivo);
                 break;
             case 3:
+                minhaCarteira.comprarMoeda(Mercado& mercadoAtivo);
                 break;
             case 4:
+                minhaCarteira.listarPosicoes();
                 break;
             case 5:
                 break;
@@ -63,6 +53,10 @@ int main() {
                 break;
         };
     }while(opcao != 0);
+
+    cout << "Salvando dados da carteira..." << endl;
+    minhaCarteira.salvarDados(arquivoCarteira);
+    cout << "Programa encerrado." << endl;
 
     return 0;
 }

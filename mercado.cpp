@@ -76,3 +76,25 @@ Moeda Mercado::obterMoeda(string codigoPassado) {
         }
     }
 }
+
+//TROCAR DEPOIS DA API DE CONSULTAR CAMBIO
+double Mercado::consultarCambio(Moeda moedaBase, Moeda moedaCambio) {
+
+    return 2.0; 
+}
+
+Moeda escolherMoeda(){
+    while(true){
+        this->listarMoedas();
+        string codigo;
+        cout << "Digite o codigo da moeda (ex: BRL, USD): ";
+        cin >> codigo;
+        for (auto & c: codigo) c = toupper(c);
+    
+        if (!mercado.validarMoeda(codigo)) {
+            cout << "Erro: A moeda '" << codigo << "' nao e suportada pelo mercado." << endl;
+            cout << "Por favor, tente novamente." << endl;
+        }
+        return obterMoeda(codigo)
+    }
+}

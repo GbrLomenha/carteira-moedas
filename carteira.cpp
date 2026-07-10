@@ -5,6 +5,8 @@
 
 using namespace std;
 
+Carteira::Carteira(Moeda moeda) : moedaPadrao(moeda) {}
+
 bool Carteira::carregarDados(string nomeArquivo, Mercado& mercado) {
     ifstream arquivo(nomeArquivo); 
     

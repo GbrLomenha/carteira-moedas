@@ -36,13 +36,13 @@ int main() {
 
         switch (opcao) {
             case 1:
-                mercadoAtivo.escolherMoeda();
+                minhaCarteira.definirMoedaPadrao(mercadoAtivo.escolherMoeda());
                 break;
             case 2:
-                minhaCarteira.movimentarSaldo(Mercado& mercadoAtivo);
+                minhaCarteira.movimentarSaldo(mercadoAtivo);
                 break;
             case 3:
-                minhaCarteira.comprarMoeda(Mercado& mercadoAtivo);
+                minhaCarteira.comprarMoeda(mercadoAtivo);
                 break;
             case 4:
                 minhaCarteira.listarPosicoes();
